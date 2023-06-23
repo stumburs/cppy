@@ -1,20 +1,46 @@
-// cppy.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+#include "cppy.hpp"
 
-#include <iostream>
+// Create functions that can take any data type
+any_type fn add(any a, any b)
+{
+	return a + b;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	// Creates a new vector
+	let vec = vector(10, 20, 30, 40, 69, 20);
+
+	// Simple for-each loop
+	for (each elem in vec)
+		print(elem, ' ');
+
+	println();
+
+	// Reversed range loop
+	for (each i in reverse(range(10)))
+		print(i, ' ');
+
+	// Multiple print arguments, including vectors
+	println("\nWow, it printed this:", vec, ":)", 12.34);
+
+	// Useful functions - finding largest element in vector
+	let max_num = max(vec);
+	println("Largest element in vec:", max_num);
+
+	// Create simple pairs
+	let text_pair = pair("Min:", "Max:");
+	let value_pair = pair(min(vec), max(vec));
+	println(text_pair.first, value_pair.first, text_pair.second, value_pair.second);
+
+	// Use the any_type'd function
+	let result = add(str("3"), str("54"));
+	let result2 = add(2.0, 40.5);
+	println(result);
+	println(result2);
+
+	// Sort vectors
+	println("Unsorted:", vec);
+	println("Sorted:", sort(vec));
+	println("Sorted descending:", sort(vec, descending)); // Specify algorithm
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
