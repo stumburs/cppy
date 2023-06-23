@@ -164,15 +164,6 @@ T min(std::vector<T> vec)
 // --------------------------------------------------------------------------------
 //				SORTING FUNCTIONS
 // --------------------------------------------------------------------------------
-// sort function
-// Sort a vector in ascending order by default
-template <typename T>
-std::vector<T> sort(std::vector<T> vec, bool (*algorithm)(const T&, const T&) = ascending<T>)
-{
-	std::sort(vec.begin(), vec.end(), algorithm);
-	return vec;
-}
-
 // ascending sort algorithm
 // Ascending sorting algorithm
 template <typename T>
@@ -187,6 +178,15 @@ template <typename T>
 bool descending(const T& a, const T& b)
 {
 	return a > b;
+}
+
+// sort function
+// Sort a vector in ascending order by default
+template <typename T>
+std::vector<T> sort(std::vector<T> vec, bool (*algorithm)(const T&, const T&) = ascending<T>)
+{
+	std::sort(vec.begin(), vec.end(), algorithm);
+	return vec;
 }
 
 // randomize function
