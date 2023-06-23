@@ -9,6 +9,11 @@
 #include <type_traits>
 #include <stdexcept>
 #include <functional>
+#include <random>
+
+// ----------------------------------------
+//				DEFINES/USING
+// ----------------------------------------
 
 #define fn auto
 #define let auto
@@ -19,11 +24,38 @@
 // Alias for std::string
 using str = std::string;
 
-// template <typename V, typename... T>
-// constexpr auto array_of(T &&...t) -> std::array<V, sizeof...(T)>
-// {
-//     return {{std::forward<T>(t)...}};
-// }
+
+
+// ----------------------------------------
+//				PRINT FUNCTION
+// ----------------------------------------
+
+// Prints multiple arguments and ending with a line-break
+template <typename... T>
+void println(const T &...t)
+{
+	((std::cout << t << (sizeof...(T) > 1 ? ' ' : '\n')), ...);
+	std::cout << std::endl;
+}
+
+// Prints empty line
+void println()
+{
+	std::cout << std::endl;
+}
+
+// Prints to a line without creating a line-break
+template <typename... T>
+void print(const T &...t)
+{
+	((std::cout << t << (sizeof...(T) > 1 ? ' ' : '\0')), ...);
+}
+
+
+
+// ----------------------------------------
+//				RANGE FUNCTION
+// ----------------------------------------
 
 template <typename IntType>
 // Returns vector with integers starting at, ending up to value provided, increasing/decreasing at given step
@@ -59,6 +91,13 @@ std::vector<IntType> range(IntType stop)
 	return range(IntType(0), stop, IntType(1));
 }
 
+
+
+// ----------------------------------------
+//				VECTOR FUNCTIONS
+// ----------------------------------------
+// ostream << operator overloading
+
 // Overwrites printing to allow vectors
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec)
@@ -74,6 +113,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec)
 	return os;
 }
 
+// reverse function
 // Returns reversed vector
 template <typename T>
 std::vector<T> reverse(std::vector<T> vec)
@@ -82,6 +122,7 @@ std::vector<T> reverse(std::vector<T> vec)
 	return vec;
 }
 
+// Vector initializer function
 // Creates and returns a vector with multiple values provided
 template <typename... Args>
 auto vector(Args &&...args) -> std::vector<typename std::common_type<Args...>::type>
@@ -94,41 +135,15 @@ auto vector(Args &&...args) -> std::vector<typename std::common_type<Args...>::t
 	return vec;
 }
 
-// Creates and returns pair from 2 values provided
-template <typename T1, typename T2>
-auto pair(T1&& first, T2&& second)
-{
-	return std::make_pair(std::forward<T1>(first), std::forward<T2>(second));
-}
-
-// Prints multiple arguments and ending with a line-break
-template <typename... T>
-void println(const T &...t)
-{
-	((std::cout << t << (sizeof...(T) > 1 ? ' ' : '\n')), ...);
-	std::cout << std::endl;
-}
-
-// Prints empty line
-void println()
-{
-	std::cout << std::endl;
-}
-
-// Prints to a line without creating a line-break
-template <typename... T>
-void print(const T &...t)
-{
-	((std::cout << t << (sizeof...(T) > 1 ? ' ' : '\0')), ...);
-}
-
-// Prints the type name of the value provided
+// Empty Vector initializer function
+// Creates and returns an empty vector
 template <typename T>
-void type_of(const T& t)
+std::vector<T> vector()
 {
-	println(typeid(t).name());
+	return std::vector<T>();
 }
 
+// max function
 // Return largest element in vector
 template <typename T>
 T max(std::vector<T> vec)
@@ -136,6 +151,7 @@ T max(std::vector<T> vec)
 	return *std::max_element(vec.begin(), vec.end());
 }
 
+// min function
 // Return smallest element in vector
 template <typename T>
 T min(std::vector<T> vec)
@@ -143,6 +159,21 @@ T min(std::vector<T> vec)
 	return *std::min_element(vec.begin(), vec.end());
 }
 
+
+
+// ----------------------------------------
+//				SORTING FUNCTIONS
+// ----------------------------------------
+// sort function
+// Sort a vector in ascending order by default
+template <typename T>
+std::vector<T> sort(std::vector<T> vec, bool (*algorithm)(const T&, const T&) = ascending<T>)
+{
+	std::sort(vec.begin(), vec.end(), algorithm);
+	return vec;
+}
+
+// ascending sort algorithm
 // Ascending sorting algorithm
 template <typename T>
 bool ascending(const T& a, const T& b)
@@ -150,6 +181,7 @@ bool ascending(const T& a, const T& b)
 	return a < b;
 }
 
+// descending sort algorithm
 // Descending sorting algorithm
 template <typename T>
 bool descending(const T& a, const T& b)
@@ -157,10 +189,103 @@ bool descending(const T& a, const T& b)
 	return a > b;
 }
 
-// Sort a vector in ascending order by default
-template <typename T>
-std::vector<T> sort(std::vector<T> vec, bool (*algorithm)(const T&, const T&) = ascending<T>)
+
+
+// ----------------------------------------
+//				PAIR FUNCTIONS
+// ----------------------------------------
+// pair initializer function
+// Creates and returns pair from 2 values provided
+template <typename T1, typename T2>
+auto pair(T1&& first, T2&& second)
 {
-	std::sort(vec.begin(), vec.end(), algorithm);
-	return vec;
+	return std::make_pair(std::forward<T1>(first), std::forward<T2>(second));
+}
+
+
+
+// ----------------------------------------
+//				RANDOM FUNCTIONS
+// ----------------------------------------
+// Namespaced to avoid overloading errors with <random>
+namespace random
+{
+	// randint function for ints
+	// Returns random whole number between 0 and max
+	int randint(int max)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dist(0, max);
+		return dist(gen);
+	}
+
+	// randint function for ints
+	// Returns random whole number between min and max
+	int randint(int min, int max)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dist(min, max);
+		return dist(gen);
+	}
+
+	// rand function for floats
+	// Returns random floating point number between 0 and num
+	float rand(float max)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> dist(0.0f, max);
+		return dist(gen);
+	}
+
+	// rand function for floats
+	// Returns random floating point number between min and max
+	float rand(float min, float max)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> dist(min, max);
+		return dist(gen);
+	}
+
+	// randrange function
+	// Returns a vector of random numbers between 0 and max
+	std::vector<int> randrange(int max, std::size_t amount)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dist(0, max);
+
+		std::vector<int> vec(amount);
+		for (auto &num : vec)
+			num = dist(gen);
+		return vec;
+	}
+
+	// randrange function
+	// Returns a vector of random numbers between min and max
+	std::vector<int> randrange(int min, int max, std::size_t amount)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> dist(min, max);
+
+		std::vector<int> vec(amount);
+		for (auto& num : vec)
+			num = dist(gen);
+		return vec;
+	}
+}
+
+// ----------------------------------------
+//				TYPE FUNCTIONS
+// ----------------------------------------
+// type_of function
+// Prints the type name of the value provided
+template <typename T>
+void type_of(const T& t)
+{
+	println(typeid(t).name());
 }
