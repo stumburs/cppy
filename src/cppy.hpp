@@ -189,6 +189,23 @@ bool descending(const T& a, const T& b)
 	return a > b;
 }
 
+// randomize function
+// Randomizes vector element positions
+template <typename T>
+std::vector<T> randomize(std::vector<T> vec)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	for (size_t i = vec.size() - 1; i > 0; --i)
+	{
+		std::uniform_int_distribution<size_t> dist(0, i);
+		size_t j = dist(gen);
+		std::swap(vec[i], vec[j]);
+	}
+	return vec;
+}
+
 
 
 // --------------------------------------------------------------------------------
