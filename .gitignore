@@ -3,9 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# main file for testing
-/src/cppy.cpp
-
 # User-specific files
 *.rsuser
 *.suo
@@ -364,4 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Main file for testing
 /src/cppy.cpp
